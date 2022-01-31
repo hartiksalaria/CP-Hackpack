@@ -41,7 +41,11 @@ struct fenwick {
 
 int main(){
     
-    vector <int> v = {1, 2, 3, 4, 5, 6};
+    int n;
+    cin >> n;
+    vector <int> v(n);
+    for(int i=0;i<n;++i)
+        cin >> v[i];
     fenwick tree;
     tree.init(v.size());
     tree.build(v);
