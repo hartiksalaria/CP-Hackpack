@@ -35,9 +35,6 @@ struct seg {
 
     int query(int start, int end, int l, int r, int node)   {
 
-        if(l > end or r < start)    {
-            return 0;
-        }
         
         if(lazy[node]){
             st[node] += (end - start + 1) * lazy[node];
@@ -46,6 +43,10 @@ struct seg {
                 lazy[2 * node + 2] += lazy[node];
             }
             lazy[node] = 0;
+        }
+
+        if(l > end or r < start)    {
+            return 0;
         }
 
         if(l <= start and r >= end) {
