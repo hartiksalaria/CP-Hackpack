@@ -3,12 +3,13 @@ using namespace std;
 #define int long long int 
 #define endl "\n"
 
-vector <int> fact(1001);
 const int m = 1e9+7;
+const int N = 1e5+5;
+vector <int> fact(N);
 
 void presolve(){
     fact[0] = 1;
-    for (int i = 1; i <= 1000; i++)
+    for (int i = 1; i < N; i++)
         fact[i] = (fact[i - 1] * i) % m;
 }
 
