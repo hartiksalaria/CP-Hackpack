@@ -68,9 +68,6 @@ struct seg {
     void update(int start, int end, int node, int l, int r, int val)   {
 
             
-        if (start > r || end < l) {
-            return ;
-        }
 
         if (lazy[node] != 0) {
             st[node] += lazy[node] * (end - start + 1);
@@ -81,6 +78,9 @@ struct seg {
             lazy[node] = 0;
         }
         
+        if (start > r || end < l) {
+            return ;
+        }
         if (start >= l && end <= r) {
             st[node] += val * (end - start + 1);
             if (start != end) {
