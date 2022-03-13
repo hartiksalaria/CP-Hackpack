@@ -1,5 +1,15 @@
 #include <bits/stdc++.h>
+#define int long long int 
 using namespace std;
+
+#ifndef ONLINE_JUDGE
+    #include "debug.h"
+#else
+    #define debug(x)
+#endif
+
+
+const int inf = 1e18;
 
 class Graph {
 
@@ -19,47 +29,32 @@ public:
         gr[y].push_back(make_pair(w, x));
     }
 
-   void shortestPath(int src)   {
+   vector<int> shortestPath(int s)   {
 
-        set <pair <int, int>> s;
-        vector <int> dis(V, INT_MAX);
-
-        s.insert(make_pair(0, src));
-        dis[src] = 0;
-        while(!s.empty())   {
-
-            auto it = s.begin();
-            int disTillNow = it->first; 
-            int node = it->second;
-            s.erase(it);
-
-            for(auto nbrPair: gr[node]) {
-
-                    int nbr = nbrPair.second;
-                    int currDis = nbrPair.first;
-
-                    if(currDis + disTillNow < dis[nbr]) {
-
-                        auto f = s.find(make_pair(dis[nbr], nbr));
-                        if(f != s.end())    {
-                            s.erase(f);
-                        }
-                        dis[nbr] = currDis + disTillNow;
-                        s.insert(make_pair(dis[nbr], nbr));
-                    }
+        int nodes = V;
+        vector<int> dist(nodes, inf);
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> q;
+        dist[s] = 0;
+        q.push({0, s});
+        while(!q.empty()){
+            auto [dis, node] = q.top();
+            q.pop();
+            if(dis > dist[node]) continue;
+            for(auto [y, w]: gr[node]){
+                if(dist[y] > dis + w){
+                    dist[y] = dis + w;
+                    q.emplace(dist[y], y);
+                }
             }
-
         }
-
-        for(int i=0;i<V;++i)    
-            cout << "Node i" << i << " distance " << dis[i] << endl;
+        return dist;
 
    }
 
 };
 
 
-int main()  {
+int32_t main()  {
 
     int n, m;
     cin >> n >> m;
@@ -71,7 +66,9 @@ int main()  {
         g.addEdge(x, y, w);
     }
 
-    g.shortestPath(0);
+    auto v = g.shortestPath(0);
+    
+    debug(v);
 
     return 0;
 }
