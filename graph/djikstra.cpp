@@ -39,7 +39,7 @@ public:
         while(!q.empty()){
             auto [dis, node] = q.top();
             q.pop();
-            if(dis > dist[node]) continue;
+            if(dis != dist[node]) continue;
             for(auto [y, w]: gr[node]){
                 if(dist[y] > dis + w){
                     dist[y] = dis + w;
