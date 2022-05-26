@@ -1,7 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int expo(int a, int b, int mod) {
+const int mod = 1e9 + 7;
+
+int expo(int a, int b) {
     int res = 1;
     while (b > 0) {
         if (b & 1)
@@ -12,10 +14,9 @@ int expo(int a, int b, int mod) {
     return res;
 }
 
-int p = 5;
 
 int moddiv(int a, int b)    {
-    return (a*expo(b, p-2, p))%p;
+    return (a * expo(b, mod - 2)) % mod;
 }
 
 
