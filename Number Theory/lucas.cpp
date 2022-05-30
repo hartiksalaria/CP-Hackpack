@@ -9,51 +9,51 @@ using namespace std;
     #define debug(x)
 #endif
 
-int p = 1e9+7;
+const int mod = 1e9 + 7;
 
 int mul(int a, int b) {
-    return (1LL * a * b) % p;
+    return (1LL * a * b) % mod;
 }
  
 int add(int a, int b) {
-    int s = (a+b);
-    if (s>=p) s-=p;
+    int s = (a + b);
+    if (s >= mod) s -= mod;
     return s;
 }
  
 int sub(int a, int b) {
-    int s = (a+p-b);
-    if (s>=p) s-=p;
+    int s = (a + mod - b);
+    if (s >= mod) s -= mod;
     return s;
 }
  
 int po(int a, int deg){
-    if (deg==0) return 1;
-    if (deg%2==1) return mul(a, po(a, deg-1));
-    int t = po(a, deg/2);
+    if (deg == 0) return 1;
+    if (deg % 2 == 1) return mul(a, po(a, deg - 1));
+    int t = po(a, deg / 2);
     return mul(t, t);
 }
  
 int inv(int n){
-    return po(n, p-2);
+    return po(n, mod - 2);
 }
  
  
-const int N = 1200000;
+const int N = 2e5 + 5;
  
 vector<int> fact(N), invfacs(N);
  
 void init(){
     fact[0] = 1;
-    for (int i = 1; i<N; i++) fact[i] = mul(fact[i-1], i);
-    invfacs[N-1] = inv(fact[N-1]);
-    for (int i = N-2; i>=0; i--) invfacs[i] = mul(invfacs[i+1], i+1);
+    for (int i = 1; i < N; i++) fact[i] = mul(fact[i - 1], i);
+    invfacs[N - 1] = inv(fact[N - 1]);
+    for (int i = N - 2; i >= 0; i--) invfacs[i] = mul(invfacs[i + 1], i + 1);
 }
  
 int ncr(int n, int k){
-    if (n<k) return 0;
-    if (n<0 or k<0) return 0;
-    return mul(fact[n], mul(invfacs[k], invfacs[n-k]));
+    if (n < k) return 0;
+    if (n < 0 or k < 0) return 0;
+    return mul(fact[n], mul(invfacs[k], invfacs[n - k]));
 }
 
 
