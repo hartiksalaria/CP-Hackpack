@@ -18,7 +18,7 @@ void dfs(int node, int parent) {
     dep[node] = dep[parent] + 1;
     
     par[node][0] = parent;
-    for (int i = 1; i < 17; ++i)
+    for (int i = 1; i < M; ++i)
         par[node][i] = par[par[node][i - 1]][i - 1];
     
     for (int x: gr[node]) {
