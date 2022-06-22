@@ -4,7 +4,6 @@ using namespace std;
 
 template <int MOD>
 class Modular {
-// using ModInt = Modular<1000000007>;
 public:
     Modular(long long v = 0) {
         value = v % MOD;
@@ -36,7 +35,7 @@ public:
         return *this;
     }
 
-    friend Modular power(Modular a, long long e) {
+    friend Modular expo(Modular a, long long e) {
         Modular res = 1;
         while (e) {
             if (e & 1)
@@ -48,7 +47,7 @@ public:
     }
 
     friend Modular inverse(Modular a) {
-        return power(a, MOD - 2);
+        return expo(a, MOD - 2);
     }
 
     Modular& operator/=(Modular const& b) {
@@ -150,7 +149,7 @@ int32_t main() {
     
     Mint a = 100000;
     
-    cout << power(a, 10000000);
+    cout << expo(a, 10000000);
     
     return 0;
 }
