@@ -11,75 +11,51 @@ using namespace std;
 
 
 class Node {
-
 public:
-
   char data;
   bool isTerminal;
-  map <char, Node *> mp;
+  vector<Node *> child;
 
   Node(char d) {
-
-    data = d;
-    isTerminal = false;
-
+      data = d;
+      isTerminal = false;
+      child.assign(26, NULL);
   }
 
 };
 
-
 class Trie {
-
-
 public:
-
   Node *root;
+  
   Trie()  {
-
       root = new Node('\0');
-
   }
-
+  
   void insert(string word) {
-
-
     Node *t = root;
     for(char ch:word) {
-
-
-      if(t->mp.count(ch) == 0)  {
-
-        Node *tmp = new Node(ch);
-        t->mp[ch] = tmp;
-
-      }
-
-      t = t->mp[ch];
-      
+        if (!t->child[ch - 'a'])  {
+            Node *tmp = new Node(ch);
+            t->child[ch - 'a'] = tmp;
+        }
+        t = t->child[ch - 'a'];
     }
 
-    t->isTerminal = true;
+      t->isTerminal = true;
 
   }
-
-
 
 bool search(string word)  {
 
-
     Node *t = root;
-
     for(char ch:word) {
-
-      if(t->mp.count(ch))
-        t = t->mp[ch];
+      if(t->child[ch - 'a'])
+        t = t->child[ch - 'a'];
       else 
         return false;
-
     }
-
     return t->isTerminal;
-
   }
 
 };
