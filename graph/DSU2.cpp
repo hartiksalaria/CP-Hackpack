@@ -1,84 +1,73 @@
-#include <bits/stdc++.h>
+// https://codeforces.com/contest/1332/problem/C
+
+#include "bits/stdc++.h"
 using namespace std;
+#define int long long 
+#define endl "\n"
 
-class Graph	{
+#ifndef ONLINE_JUDGE
+#include "debug.h"
+#else
+#define debug(...)
+#endif
 
-private:
-	int V;
-	vector <pair <int, int>> edges;
-public:
-
-	Graph(int V)	{
-		this->V = V;
-	}
-
-	void addEdge(int x, int y)	{
-		edges.push_back(make_pair(x, y));
-	}
-
-	int findSet(int x, vector <int> &parent)	{
-
-		if(parent[x]==-1)
-				return x;
-		return parent[x] = findSet(parent[x], parent);
-
-	}
-
-	void unionSet(int x, int y, vector <int> &parent, vector <int> &rank)	{
-
-			int s1 = findSet(x, parent);
-			int s2 = findSet(y, parent);
-			if(rank[s1] > rank[s2])	{
-				parent[s2] = s1;
-				rank[s1] += rank[s2];
-			}
-			else {
-				parent[s1] = s2;
-				rank[s2] += rank[s1];
-			}
-
-	}
-
-	bool containsCycle()	{
-
-		vector <int> parent(V, -1);
-		vector <int> rank(V, 1);
-
-		for(auto edge: edges)	{
-
-				int x = edge.first;
-				int y = edge.second;
-
-				int s1 = findSet(x, parent);
-				int s2 = findSet(y, parent);
-				if(s1!=s2)	{
-					unionSet(x, y, parent, rank);
-				}
-				else {
-					return true;
-				}
-
-		}
-
-		return false;
-
-	}
-
+struct DSU {
+    vector<int> parent, rank;
+    DSU(int n) {
+        parent.assign(n, -1);
+        rank.assign(n, 1);
+    }  
+    int get(int a) {
+        if (parent[a] == -1)
+            return a;
+        return parent[a] = get(parent[a]);
+    }
+    void merge(int a, int b) {
+        int s1 = get(a);
+        int s2 = get(b);
+        if (s1 == s2) 
+            return;
+        if (rank[s1] < rank[s2]) 
+            swap(s1, s2);
+        parent[s2] = s1;
+        rank[s1] += rank[s2];
+    }
+    int sz(int a) {
+        return rank[get(a)];
+    }
 };
 
+int32_t main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL), cout.tie(NULL);
 
-int main()	{
+    int tt;
+    cin >> tt;
 
-	Graph g(5);
+    while (tt--) {
+        int n, k;
+        cin >> n >> k;
+        string s;
+        cin >> s;
+        DSU t(n);
+        for (int i = 0; i < k; ++i)
+            for (int j = i + k; j < n; j += k) 
+               t.merge(i, j);
+        for (int i = 0; i < n / 2; ++i) 
+            t.merge(i, n - 1 - i);
+        map<int, map<char, int>> f;
+        for (int i = 0; i < n; ++i) 
+            f[t.get(i)][s[i]]++;
+        int ans = 0;
+        for (auto &[x, _f]: f) {
+            int sz = t.sz(x);
+            int mx = 0;
+            for (auto [_, __f]: _f)
+                mx = max(mx, __f);
+            ans += sz - mx;
+        }
+        cout << ans << endl;
+    }
 
-	g.addEdge(0, 1);
-	g.addEdge(2, 1);
-	g.addEdge(2, 3);
-	g.addEdge(3, 4);
-	g.addEdge(0, 4);
-
-	cout << g.containsCycle() << endl;
-
-	return 0;
+    return 0;
 }
-
