@@ -1,3 +1,5 @@
+// https://codeforces.com/contest/1702/problem/G2
+
 #include "bits/stdc++.h"
 using namespace std;
 #define int long long int 
