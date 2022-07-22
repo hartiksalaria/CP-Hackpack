@@ -1,47 +1,88 @@
+// https://codeforces.com/contest/1709/problem/D
+
 #include "bits/stdc++.h"
 using namespace std;
-#define int long long int 
+#define int long long
 #define endl "\n"
 
-#ifndef ONLINE_JUDGE
-    #include "debug.h"
+#ifdef LOCAL
+#include "debug.h"
 #else
-    #define debug(x)
+#define debug(...)
 #endif
 
-const int MAX_N = 100005;
-const int LOG = 17;
-int a[MAX_N];
-int m[MAX_N][LOG]; 
-int bin_log[MAX_N];
-
-int query(int L, int R) { 
-    int length = R - L + 1;
-    int k = bin_log[length];
-    return min(m[L][k], m[R-(1<<k)+1][k]);
-}
-
-int32_t main() {
+struct SparseTable {
+    using T = int;
     int n;
-    cin >> n;
-    bin_log[1] = 0;
-    for(int i = 2; i <= n; i++) {
-        bin_log[i] = bin_log[i/2]+1;
+    int h;
+    vector<vector<T>> table;
+ 
+    T op(T x, T y) {
+        return max(x, y);
     }
-    for(int i = 0; i < n; i++) {
-        cin >> a[i];
-        m[i][0] = a[i];
-    }
-    for(int k = 1; k < LOG; k++) {
-        for(int i = 0; i + (1 << k) - 1 < n; i++) {
-            m[i][k] = min(m[i][k-1], m[i+(1<<(k-1))][k-1]);
+    
+    SparseTable(const vector<T> &v) {
+        n = (int) v.size();
+        h = 32 - __builtin_clz(n);
+        table.resize(h);
+        table[0] = v;
+        for (int j = 1; j < h; j++) {
+            table[j].resize(n - (1 << j) + 1);
+            for (int i = 0; i <= n - (1 << j); i++) {
+                table[j][i] = op(table[j - 1][i], table[j - 1][i + (1 << (j - 1))]);
+            }
         }
     }
+ 
+    // gives op in the range [a, b)
+    T get(int l, int r) {
+        assert(l < r);
+        int k = 31 - __builtin_clz(r - l);
+        return op(table[k][l], table[k][r - (1 << k)]);
+    }
+};
+
+int32_t main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL), cout.tie(NULL);
+
+    int n, m;
+    cin >> n >> m;
+    
+    vector<int> a(m);
+    for (int i = 0; i < m; ++i)
+        cin >> a[i];
+    
+    SparseTable table(a);
+    
     int q;
     cin >> q;
-    for(int i = 0; i < q; i++) {
-        int L, R;
-        cin >> L >> R;
-        cout << query(L, R) << endl;
+    
+    while (q--) {
+        int x1, y1, x2, y2, k;
+        cin >> x1 >> y1 >> x2 >> y2 >> k;
+        x1--, x2--, y1--, y2--;
+        if (abs(x1 - x2) % k || abs(y1 - y2) % k) {
+            cout << "NO" << endl;
+            continue;
+        }
+        
+        
+        if (y1 > y2)
+            swap(y1, y2);
+        
+        int h = table.get(y1, y2 + 1);
+        
+        x1++;
+        
+        int t = (n - x1) / k;
+        int up = x1 + t * k;
+        
+        // debug(mp(h, up));
+        
+        cout << (up > h ? "YES" : "NO") << endl;
+        
     }
+
+    return 0;
 }
