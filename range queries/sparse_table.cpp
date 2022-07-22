@@ -20,7 +20,7 @@ struct SparseTable {
     T op(T x, T y) {
         return max(x, y);
     }
-    
+ 
     SparseTable(const vector<T> &v) {
         n = (int) v.size();
         h = 32 - __builtin_clz(n);
@@ -34,8 +34,8 @@ struct SparseTable {
         }
     }
  
-    // gives op in the range [a, b)
     T get(int l, int r) {
+        r++;
         assert(l < r);
         int k = 31 - __builtin_clz(r - l);
         return op(table[k][l], table[k][r - (1 << k)]);
@@ -67,11 +67,7 @@ int32_t main() {
             continue;
         }
         
-        
-        if (y1 > y2)
-            swap(y1, y2);
-        
-        int h = table.get(y1, y2 + 1);
+        int h = table.get(min(y1, y2), max(y1, y2));
         
         x1++;
         
