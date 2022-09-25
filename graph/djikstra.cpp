@@ -25,8 +25,8 @@ public:
     }
 
     void addEdge(int x, int y, int w)  {
-        gr[x].push_back(make_pair(w, y));
-        gr[y].push_back(make_pair(w, x));
+        gr[x].push_back(make_pair(y, w));
+        gr[y].push_back(make_pair(y, w));
     }
 
    vector<int> shortestPath(int s)   {
