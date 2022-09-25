@@ -2,7 +2,7 @@
 #define int long long int
 using namespace std;
 
-#ifndef LOCAL
+#ifdef LOCAL
 #include "debug.h"
 #else
 #define debug(x)
