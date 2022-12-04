@@ -1,3 +1,6 @@
+// https://cses.fi/problemset/task/2195/
+// https://codeforces.com/contest/166/problem/B
+
 #include <bits/stdc++.h>
 using namespace std;
 #define int long long
