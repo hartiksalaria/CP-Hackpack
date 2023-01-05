@@ -14,7 +14,7 @@ struct DSU {
     int components;
     vector<int> parent, rank;
     DSU(int n) {
-        // #warning be careful with initializing components
+        #warning be careful with initializing components
         components = n;
         parent.assign(n, -1);
         rank.assign(n, 1);
