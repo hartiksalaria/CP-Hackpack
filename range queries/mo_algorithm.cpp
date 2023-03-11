@@ -1,4 +1,5 @@
 // https://www.spoj.com/problems/DQUERY/
+// https://atcoder.jp/contests/abc293/tasks/abc293_g
 
 #include <bits/stdc++.h>
 using namespace std;
