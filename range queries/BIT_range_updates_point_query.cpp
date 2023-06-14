@@ -1,34 +1,28 @@
-#include "bits/stdc++.h"
+// https://codeforces.com/contest/1208/problem/D
+
+#include <bits/stdc++.h>
 using namespace std;
-#define int long long int 
-#define endl "\n"
 
-#ifndef ONLINE_JUDGE
-    #include "debug.h"
-#else
-    #define debug(x)
-#endif
-
-struct BIT {
+struct fenwick {
     int n;
-    vector<int> fen;
-    BIT(int n) {
+    vector<long long> fen;
+    fenwick(int n) {
         this->n = n + 1;
         fen.assign(n + 1, 0);
-    }  
-    void add(int x, int val) {
+    }
+    void add(int x, long long val) {
         x++;
         while (x < n) {
             fen[x] += val;
             x += x & -x;
         }
     }
-    void update(int l, int r, int val) {
+    void update(int l, int r, long long val) {
         add(l, val);
         add(r + 1, -val);
     }
-    int query(int x){
-        int res = 0;
+    long long query(int x) {
+        long long res = 0;
         x++;
         while (x > 0) {
             res += fen[x];
@@ -36,26 +30,46 @@ struct BIT {
         }
         return res;
     }
-    void build(vector<int> &v) {
-        for (int i = 0; i < v.size(); ++i)
+    void build(vector<long long> &v) {
+        for (int i = 0; i < v.size(); ++i) {
             update(i, i, v[i]);
+        }
     }
 };
 
-
-int32_t main() {
-
+int main() {
     ios_base::sync_with_stdio(false);
-    cin.tie(NULL), cout.tie(NULL);
-
-    vector<int> v = {1, 2, 3, 4, 5};
-    BIT tree(5);
-    tree.build(v);
-    
-    tree.update(0, 2, -4);
-    tree.update(1, 3, 5);
-    
-    cout << tree.query(2) << endl;
-
+    cin.tie(0);
+    int n;
+    cin >> n;
+    vector<long long> a(n), pre(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+        if (i) {
+            pre[i] += pre[i - 1];
+        }
+        pre[i] += i;
+    }
+    fenwick ds(n);
+    ds.build(pre);
+    vector<int> res(n);
+    for (int i = n - 1; i >= 0; --i) {
+        int low = 0, high = n - 1;
+        int ans = 0;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (ds.query(mid) <= a[i]) {
+                ans = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        res[i] = ans + 1;
+        ds.update(res[i], n, -res[i]);
+    }
+    for (int i = 0; i < n; ++i) {
+        cout << res[i] << " \n"[i == n - 1];
+    }
     return 0;
 }
