@@ -10,88 +10,82 @@ using namespace std;
 #define debug(...) 42
 #endif
 
+const int N = 2e5 + 5;
+const int sq = sqrtl(N);
+
+int cnt[N];
+
 struct Query {
-    int l, r, ans, id, block;
-    bool operator<(Query Q) const {
-        if (this->block == Q.block) {
-            return this->r < Q.r;
-        }
-        return this->block < Q.block;
-    }
+    int l, r, id;
 };
 
-const int nax = 1e6 + 5, N = 3e4 + 5, _Q = 2e5 + 5;
-int cnt[nax], a[N];
-Query Q[_Q];
+bool comp(const Query &a, const Query &b) {
+    if (a.l / sq != b.l / sq) {
+        return a.l < b.l;
+    }
+    if ((a.l / sq) & 1) {
+        return a.r < b.r;
+    }
+    return a.r > b.r;
+}
 
-int32_t main() {
+int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(0);
 
-    int n;
-    cin >> n;
+    int n, x;
+    cin >> n >> x;
 
+    vector<int> a(n);
     for (int i = 0; i < n; ++i) {
         cin >> a[i];
     }
 
-    int m = sqrtl(n);
-
-    int q;
-    cin >> q;
-
-    for (int i = 0; i < q; ++i) {
-        cin >> Q[i].l >> Q[i].r;
-        Q[i].l--, Q[i].r--;
-        Q[i].id = i;
-        Q[i].block = Q[i].l / m;
+    vector<Query> q(x);
+    for (int i = 0; i < x; ++i) {
+        cin >> q[i].l >> q[i].r;
+        q[i].l--, q[i].r--;
+        q[i].id = i;
     }
 
-    sort(Q, Q + q);
+    sort(q.begin(), q.end(), comp);
 
-    int dis = 0;
-    int x = 0, y = 0;
+    long long curr = 0;
 
-    auto add = [&](int x) -> void {
-        cnt[x]++;
-        if (cnt[x] == 1) {
-            dis++;
-        }
+    auto pr = [&](int t) -> long long {
+        return 1LL * t * (t - 1) / 2;
     };
 
-    auto remove = [&](int x) -> void {
-        cnt[x]--;
-        if (cnt[x] == 0) {
-            dis--;
-        }
-    };
+    int l = 0, r = 0;
 
-    for (int i = 0; i < q; ++i) {
-        while (y <= Q[i].r) {
-            add(a[y]);
-            y++;
+    vector<long long> res(x);
+
+    for (int i = 0; i < x; ++i) {
+        while (r <= q[i].r) {
+            curr += pr(cnt[a[r]]);
+            cnt[a[r]]++;
+            r++;
         }
-        while (y > Q[i].r + 1) {
-            y--;
-            remove(a[y]);
+        while (r - 1 > q[i].r) {
+            r--;
+            cnt[a[r]]--;
+            curr -= pr(cnt[a[r]]);
         }
-        while (x < Q[i].l) {
-            remove(a[x]);
-            x++;
+        while (l > q[i].l) {
+            l--;
+            curr += pr(cnt[a[l]]);
+            cnt[a[l]]++;
         }
-        while (x > Q[i].l) {
-            x--;
-            add(a[x]);
+        while (l < q[i].l) {
+            cnt[a[l]]--;
+            curr -= pr(cnt[a[l]]);
+            l++;
         }
-        Q[i].ans = dis;
+        res[q[i].id] = curr;
     }
 
-    sort(Q, Q + q, [&](Query &a, Query &b) {
-        return a.id < b.id;
-    });
-
-    for (int i = 0; i < q; ++i) {
-        cout << Q[i].ans << '\n';
+    for (int i = 0; i < x; ++i) {
+        cout << res[i] << '\n';
     }
 
     return 0;
